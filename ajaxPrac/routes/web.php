@@ -46,3 +46,6 @@ Route::get('/add-student',    function(){
     Route::post('product/update/{id}', [ProductController::class, 'update'])->name('product-update');
     Route::delete('product/delete/{id}', [ProductController::class, 'destroy'])->name('product-delete');
 // ===================End Product ===================
+
+Route::get('/reset-password', [UserController::class, 'resetPasswordLoad']);
+Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('reset_password');

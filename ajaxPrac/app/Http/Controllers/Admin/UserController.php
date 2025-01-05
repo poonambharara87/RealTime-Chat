@@ -3,8 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Mail;
+use App\Models\PasswordReset;
+use App\Mail\ForgotPassword;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Str;
+use Validator, Hash;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -59,5 +66,34 @@ class UserController extends Controller
         $data = json_decode($user);
 
         return $data;
+    }
+
+    public function resetPasswordLoad(Request $request)
+    {
+       
+        $passwordReset = PasswordReset::where('token', $request->token)->get();
+        if(isset($request->token) && count($passwordReset) > 0)
+        {
+            $user = User::where('email', $passwordReset[0]['email'])->get();
+            return view('mail.resetPassword',compact('user'));
+        }
+        else{
+            return view('404');
+        }
+        
+    }
+
+    public function resetPassword(Request $request)
+    {
+        //Confirmed will validate match password and password_confirmation
+        $request->validate([
+            'password' => 'required|min:6|confirmed|string'
+        ]);
+
+        $user = User::find($request->id);
+        $user->password = $request->password;
+        $user->save();
+        
+        return "<h1>Your password has been reset successfully.</h1>";
     }
 }

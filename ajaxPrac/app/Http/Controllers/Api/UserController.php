@@ -160,17 +160,5 @@ class UserController extends Controller
         return response()->json(['success' => 'Please check your mail to reset your passowrd!']);
     }
 
-    public function resetPasswordLoad(Request $request)
-    {
-        $passwordReset = PasswordReset::where('token', $request->token)->get();
-        if(isset($request->token) && count($resetData) > 0)
-        {
-            $user = User::where('email', $passwordReset[0]['email'])->get();
-            return view('mail.resetPassword',compact('user'));
-        }
-        else{
-            return view('404');
-        }
-        
-    }
+  
 }
